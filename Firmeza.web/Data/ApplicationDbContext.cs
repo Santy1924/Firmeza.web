@@ -14,9 +14,4 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Venta> Ventas { get; set; }
     public DbSet<DetalleVenta> DetallesVenta { get; set; }
-    
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-    }
 }
