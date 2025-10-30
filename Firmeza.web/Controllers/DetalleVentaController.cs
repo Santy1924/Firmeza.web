@@ -10,23 +10,23 @@ using Firmeza.web.Models.Entity;
 
 namespace Firmeza.web.Controllers
 {
-    public class Venta : Controller
+    public class DetalleVentaController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public Venta(ApplicationDbContext context)
+        public DetalleVentaController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Venta
+        // GET: DetalleVenta
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Ventas.Include(v => v.Cliente);
+            var applicationDbContext = _context.DetallesVenta.Include(d => d.Producto).Include(d => d.Venta);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Venta/Details/5
+        // GET: DetalleVenta/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +34,49 @@ namespace Firmeza.web.Controllers
                 return NotFound();
             }
 
-            var venta = await _context.Ventas
-                .Include(v => v.Cliente)
+            var detalleVenta = await _context.DetallesVenta
+                .Include(d => d.Producto)
+                .Include(d => d.Venta)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (venta == null)
+            if (detalleVenta == null)
             {
                 return NotFound();
             }
 
-            return View(venta);
+            return View(detalleVenta);
         }
 
-        // GET: Venta/Create
+        // GET: DetalleVenta/Create
         public IActionResult Create()
         {
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id");
+            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Id");
+            ViewData["VentaId"] = new SelectList(_context.Ventas, "Id", "Id");
             return View();
         }
 
-        // POST: Venta/Create
+        // POST: DetalleVenta/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Fecha,ClienteId,Total,MetodoPago,TipoVenta")] Venta venta)
+        public async Task<IActionResult> Create([Bind("Id,VentaId,ProductoId,Cantidad,PrecioUnitario")] DetalleVentaController detalleVentaController)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(venta);
+                _context.Add(detalleVentaController);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", venta.ClienteId);
-            return View(venta);
+            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Id", detalleVentaController.ProductoId);
+            ViewData["VentaId"] = new SelectList(_context.Ventas, "Id", "Id", detalleVentaController.VentaId);
+            return View(detalleVentaController);
         }
 
-        // GET: Venta/Edit/5
+        public object VentaId { get; set; }
+
+        public object ProductoId { get; set; }
+
+        // GET: DetalleVenta/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +84,24 @@ namespace Firmeza.web.Controllers
                 return NotFound();
             }
 
-            var venta = await _context.Ventas.FindAsync(id);
-            if (venta == null)
+            var detalleVenta = await _context.DetallesVenta.FindAsync(id);
+            if (detalleVenta == null)
             {
                 return NotFound();
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", venta.ClienteId);
-            return View(venta);
+            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Id", detalleVenta.ProductoId);
+            ViewData["VentaId"] = new SelectList(_context.Ventas, "Id", "Id", detalleVenta.VentaId);
+            return View(detalleVenta);
         }
 
-        // POST: Venta/Edit/5
+        // POST: DetalleVenta/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,ClienteId,Total,MetodoPago,TipoVenta")] Venta venta)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,VentaId,ProductoId,Cantidad,PrecioUnitario")] DetalleVentaController detalleVentaController)
         {
-            if (id != venta.Id)
+            if (id != detalleVentaController.Id)
             {
                 return NotFound();
             }
@@ -102,12 +110,12 @@ namespace Firmeza.web.Controllers
             {
                 try
                 {
-                    _context.Update(venta);
+                    _context.Update(detalleVentaController);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VentaExists(venta.Id))
+                    if (!DetalleVentaExists(detalleVentaController.Id))
                     {
                         return NotFound();
                     }
@@ -118,15 +126,14 @@ namespace Firmeza.web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", venta.ClienteId);
-            return View(venta);
+            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Id", detalleVentaController.ProductoId);
+            ViewData["VentaId"] = new SelectList(_context.Ventas, "Id", "Id", detalleVentaController.VentaId);
+            return View(detalleVentaController);
         }
-
-        public object ClienteId { get; set; }
 
         public int Id { get; set; }
 
-        // GET: Venta/Delete/5
+        // GET: DetalleVenta/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,35 +141,36 @@ namespace Firmeza.web.Controllers
                 return NotFound();
             }
 
-            var venta = await _context.Ventas
-                .Include(v => v.Cliente)
+            var detalleVenta = await _context.DetallesVenta
+                .Include(d => d.Producto)
+                .Include(d => d.Venta)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (venta == null)
+            if (detalleVenta == null)
             {
                 return NotFound();
             }
 
-            return View(venta);
+            return View(detalleVenta);
         }
 
-        // POST: Venta/Delete/5
+        // POST: DetalleVenta/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var venta = await _context.Ventas.FindAsync(id);
-            if (venta != null)
+            var detalleVenta = await _context.DetallesVenta.FindAsync(id);
+            if (detalleVenta != null)
             {
-                _context.Ventas.Remove(venta);
+                _context.DetallesVenta.Remove(detalleVenta);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool VentaExists(int id)
+        private bool DetalleVentaExists(int id)
         {
-            return _context.Ventas.Any(e => e.Id == id);
+            return _context.DetallesVenta.Any(e => e.Id == id);
         }
     }
 }

@@ -6,26 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Firmeza.web.Data;
-using Firmeza.web.Models.Entity;
 
 namespace Firmeza.web.Controllers
 {
-    public class Producto : Controller
+    public class ClienteController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public Producto(ApplicationDbContext context)
+        public ClienteController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Producto
+        // GET: Cliente
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Productos.ToListAsync());
+            return View(await _context.Clientes.ToListAsync());
         }
 
-        // GET: Producto/Details/5
+        // GET: Cliente/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +32,39 @@ namespace Firmeza.web.Controllers
                 return NotFound();
             }
 
-            var producto = await _context.Productos
+            var cliente = await _context.Clientes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (producto == null)
+            if (cliente == null)
             {
                 return NotFound();
             }
 
-            return View(producto);
+            return View(cliente);
         }
 
-        // GET: Producto/Create
+        // GET: Cliente/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Producto/Create
+        // POST: Cliente/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,PrecioUnitario,UnidadMedida,Activo")] Producto producto)
+        public async Task<IActionResult> Create([Bind("Id,NombreCompleto,Documento,Correo,Telefono,Direccion,Activo")] ClienteController clienteController)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(producto);
+                _context.Add(clienteController);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(producto);
+            return View(clienteController);
         }
 
-        // GET: Producto/Edit/5
+        // GET: Cliente/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +72,22 @@ namespace Firmeza.web.Controllers
                 return NotFound();
             }
 
-            var producto = await _context.Productos.FindAsync(id);
-            if (producto == null)
+            var cliente = await _context.Clientes.FindAsync(id);
+            if (cliente == null)
             {
                 return NotFound();
             }
-            return View(producto);
+            return View(cliente);
         }
 
-        // POST: Producto/Edit/5
+        // POST: Cliente/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,PrecioUnitario,UnidadMedida,Activo")] Producto producto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NombreCompleto,Documento,Correo,Telefono,Direccion,Activo")] ClienteController clienteController)
         {
-            if (id != producto.Id)
+            if (id != clienteController.Id)
             {
                 return NotFound();
             }
@@ -97,12 +96,12 @@ namespace Firmeza.web.Controllers
             {
                 try
                 {
-                    _context.Update(producto);
+                    _context.Update(clienteController);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductoExists(producto.Id))
+                    if (!ClienteExists(clienteController.Id))
                     {
                         return NotFound();
                     }
@@ -113,12 +112,12 @@ namespace Firmeza.web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(producto);
+            return View(clienteController);
         }
 
         public int Id { get; set; }
 
-        // GET: Producto/Delete/5
+        // GET: Cliente/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +125,34 @@ namespace Firmeza.web.Controllers
                 return NotFound();
             }
 
-            var producto = await _context.Productos
+            var cliente = await _context.Clientes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (producto == null)
+            if (cliente == null)
             {
                 return NotFound();
             }
 
-            return View(producto);
+            return View(cliente);
         }
 
-        // POST: Producto/Delete/5
+        // POST: Cliente/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var producto = await _context.Productos.FindAsync(id);
-            if (producto != null)
+            var cliente = await _context.Clientes.FindAsync(id);
+            if (cliente != null)
             {
-                _context.Productos.Remove(producto);
+                _context.Clientes.Remove(cliente);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductoExists(int id)
+        private bool ClienteExists(int id)
         {
-            return _context.Productos.Any(e => e.Id == id);
+            return _context.Clientes.Any(e => e.Id == id);
         }
     }
 }
