@@ -57,17 +57,19 @@ namespace Firmeza.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Fecha,ClienteId,Total,MetodoPago,TipoVenta")] VentaController ventaController)
+        public async Task<IActionResult> Create([Bind("Id,Fecha,ClienteId,Total,MetodoPago,TipoVenta")] Venta venta)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ventaController);
+                _context.Add(venta);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", ventaController.ClienteId);
-            return View(ventaController);
+
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "NombreCompleto", venta.ClienteId);
+            return View(venta);
         }
+
 
         // GET: Venta/Edit/5
         public async Task<IActionResult> Edit(int? id)

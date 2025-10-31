@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Firmeza.web.Data;
+using Firmeza.web.Models.Entity;
 
 namespace Firmeza.web.Controllers
 {
@@ -53,15 +54,15 @@ namespace Firmeza.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NombreCompleto,Documento,Correo,Telefono,Direccion,Activo")] ClienteController clienteController)
+        public async Task<IActionResult> Create([Bind("Id,NombreCompleto,Documento,Correo,Telefono,Direccion,Activo")] Cliente cliente)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(clienteController);
+                _context.Add(cliente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(clienteController);
+            return View(cliente);
         }
 
         // GET: Cliente/Edit/5
@@ -85,9 +86,9 @@ namespace Firmeza.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NombreCompleto,Documento,Correo,Telefono,Direccion,Activo")] ClienteController clienteController)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NombreCompleto,Documento,Correo,Telefono,Direccion,Activo")] Cliente cliente)
         {
-            if (id != clienteController.Id)
+            if (id != cliente.Id)
             {
                 return NotFound();
             }
@@ -96,12 +97,12 @@ namespace Firmeza.web.Controllers
             {
                 try
                 {
-                    _context.Update(clienteController);
+                    _context.Update(cliente);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClienteExists(clienteController.Id))
+                    if (!ClienteExists(cliente.Id))
                     {
                         return NotFound();
                     }
@@ -112,7 +113,7 @@ namespace Firmeza.web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(clienteController);
+            return View(cliente);
         }
 
         public int Id { get; set; }

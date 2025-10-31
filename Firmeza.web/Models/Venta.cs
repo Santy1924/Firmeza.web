@@ -4,11 +4,11 @@ public class Venta
 {
     public int Id { get; set; }
     
-    public DateTime Fecha { get; set; } = DateTime.UtcNow;
+    public DateTime Fecha { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
     
     public int ClienteId { get; set; }
     
-    public Cliente Cliente { get; set; } = null!;
+    public Cliente? Cliente { get; set; } 
     
     public decimal Total { get; set; }
     
