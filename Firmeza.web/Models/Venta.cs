@@ -14,7 +14,7 @@ public class Venta
     
     public string? MetodoPago { get; set; }
     
-    public string? TipoVenta { get; set; } 
+    public string? TipoVenta { get; set; }
     
     public ICollection<DetalleVenta>? DetallesVenta { get; set; }
 }

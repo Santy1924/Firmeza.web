@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Firmeza.web.Data;
 using Firmeza.web.Models.Entity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Firmeza.web.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class ClienteController : Controller
     {
         private readonly ApplicationDbContext _context;

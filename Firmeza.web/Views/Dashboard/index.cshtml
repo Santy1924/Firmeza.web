@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Panel Administrativo";
+    Layout = "~/Views/Shared/LayoutDashboard.cshtml";
+}
+
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row text-center">
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Productos</h5>
+                <p class="display-6 fw-bold text-primary">@ViewData["TotalProductos"]</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Clientes</h5>
+                <p class="display-6 fw-bold text-success">@ViewData["TotalClientes"]</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Ventas</h5>
+                <p class="display-6 fw-bold text-danger">@ViewData["TotalVentas"]</p>
+            </div>
+        </div>
+    </div>
+</div>
+

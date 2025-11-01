@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Firmeza.web.Data;
 using Firmeza.web.Models.Entity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Firmeza.web.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class VentaController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -61,6 +63,7 @@ namespace Firmeza.web.Controllers
         {
             if (ModelState.IsValid)
             {
+                venta.Fecha = DateTime.SpecifyKind(venta.Fecha, DateTimeKind.Utc);
                 _context.Add(venta);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -93,9 +96,9 @@ namespace Firmeza.web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,ClienteId,Total,MetodoPago,TipoVenta")] VentaController ventaController)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,ClienteId,Total,MetodoPago,TipoVenta")] Venta venta)
         {
-            if (id != ventaController.Id)
+            if (id != venta.Id)
             {
                 return NotFound();
             }
@@ -104,12 +107,13 @@ namespace Firmeza.web.Controllers
             {
                 try
                 {
-                    _context.Update(ventaController);
+                    venta.Fecha = DateTime.SpecifyKind(venta.Fecha, DateTimeKind.Utc);
+                    _context.Update(venta);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VentaExists(ventaController.Id))
+                    if (!VentaExists(venta.Id))
                     {
                         return NotFound();
                     }
@@ -120,8 +124,8 @@ namespace Firmeza.web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", ventaController.ClienteId);
-            return View(ventaController);
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", venta.ClienteId);
+            return View(venta);
         }
 
         public object ClienteId { get; set; }
