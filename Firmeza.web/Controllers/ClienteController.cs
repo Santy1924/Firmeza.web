@@ -58,14 +58,30 @@ namespace Firmeza.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,NombreCompleto,Documento,Correo,Telefono,Direccion,Activo")] Cliente cliente)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Por favor verifica los datos ingresados antes de continuar.";
+                return View(cliente);
+            }
+
+            try
             {
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "El cliente se ha registrado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(cliente);
+            catch (Exception ex)
+            {
+                // Aquí podrías registrar el error si usas un sistema de logs
+                // _logger.LogError(ex, "Error al crear cliente.");
+
+                TempData["ErrorMessage"] = "Ocurrió un error al registrar el cliente. Por favor intenta nuevamente.";
+                return View(cliente);
+            }
         }
+
 
         // GET: Cliente/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -92,31 +108,45 @@ namespace Firmeza.web.Controllers
         {
             if (id != cliente.Id)
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(cliente);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClienteExists(cliente.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                TempData["ErrorMessage"] = "El cliente especificado no existe o el identificador no coincide.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(cliente);
+
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Por favor, verifica los datos ingresados antes de continuar.";
+                return View(cliente);
+            }
+
+            try
+            {
+                _context.Update(cliente);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "El cliente se ha actualizado correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClienteExists(cliente.Id))
+                {
+                    TempData["ErrorMessage"] = "El cliente ya no existe en la base de datos.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocurrió un error al intentar actualizar el cliente. Inténtalo nuevamente.";
+                    return View(cliente);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Puedes registrar el error con _logger.LogError(ex, "Error al editar cliente");
+                TempData["ErrorMessage"] = "Se produjo un error inesperado. Por favor intenta de nuevo más tarde.";
+                return View(cliente);
+            }
         }
+
 
         public int Id { get; set; }
 

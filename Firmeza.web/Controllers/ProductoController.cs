@@ -50,16 +50,32 @@ namespace Firmeza.web.Controllers
         // POST: Producto/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,PrecioUnitario,UnidadMedida,Activo")] Producto producto)
+        public async Task<IActionResult> Create(Producto producto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(producto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(producto);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "✅ Producto creado correctamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                TempData["ErrorMessage"] = "❌ Los datos del producto no son válidos.";
+                return View(producto);
             }
-            return View(producto);
+            catch (Exception ex)
+            {
+                // Registrar el error (para diagnóstico interno)
+                Console.WriteLine($"Error al crear el producto: {ex.Message}");
+
+                // Mostrar mensaje amigable al usuario
+                TempData["ErrorMessage"] = "⚠️ Ocurrió un error al guardar el producto. Intenta nuevamente.";
+                return View(producto);
+            }
         }
+
 
         // GET: Producto/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -77,27 +93,29 @@ namespace Firmeza.web.Controllers
         // POST: Producto/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,PrecioUnitario,UnidadMedida,Activo")] Producto producto)
+        public async Task<IActionResult> Edit(int id, Producto producto)
         {
             if (id != producto.Id)
-                return NotFound();
-
-            if (ModelState.IsValid)
             {
-                try
+                TempData["ErrorMessage"] = "El producto especificado no existe.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                if (ModelState.IsValid)
                 {
                     _context.Update(producto);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "✅ Producto actualizado correctamente.";
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductoExists(producto.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
             }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "⚠️ No se pudo actualizar el producto. Intenta nuevamente.";
+            }
+
             return View(producto);
         }
 

@@ -5,7 +5,17 @@
     Layout = "~/Views/Shared/LayoutDashboard.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Listado de productos</h1>
+
+<!-- 🔹 Mensajes generales (éxito / error) -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
 
 <p>
     <a asp-action="Create">Create New</a>

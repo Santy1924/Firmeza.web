@@ -19,6 +19,8 @@ body, html {
     display: flex;
     flex-direction: column;
     padding: 1.5rem 1rem;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
 .sidebar h3 {
@@ -46,13 +48,14 @@ body, html {
 
 .logout {
     margin-top: auto;
-    background-color: #dc3545;
+    background-color: #cc0000;
     color: white;
     text-align: center;
     padding: 0.6rem;
     border-radius: 6px;
     text-decoration: none;
     transition: background 0.3s;
+    display: block;
 }
 
 .logout:hover {
