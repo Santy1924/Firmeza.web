@@ -1,6 +1,6 @@
-namespace Firmeza.web.Models.Entity;
 using System.ComponentModel.DataAnnotations;
 
+namespace Firmeza.web.Data.Entity;
 public class Producto
 {
     public int Id { get; set; }
@@ -16,11 +16,9 @@ public class Producto
     [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor que 0.")]
     public decimal PrecioUnitario { get; set; }
 
-    [Required(ErrorMessage = "Debe seleccionar una unidad de medida.")]
-    [StringLength(50, ErrorMessage = "La unidad de medida no puede superar los 50 caracteres.")]
-    public string? UnidadMedida { get; set; }
-
-    public bool Activo { get; set; } = true;
-
     public ICollection<DetalleVenta>? DetallesVenta { get; set; }
+    
+    [Required(ErrorMessage = "La categoría es obligatoria.")]
+    [StringLength(100)]
+    public string Categoria { get; set; } = string.Empty;
 }

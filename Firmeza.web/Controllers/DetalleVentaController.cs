@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Firmeza.web.Data;
-using Firmeza.web.Models.Entity;
+using Firmeza.web.Data.Entity;
 
 namespace Firmeza.web.Controllers
 {

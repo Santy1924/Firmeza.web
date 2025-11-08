@@ -1,5 +1,7 @@
-namespace Firmeza.web.Models.Entity;
+using System.ComponentModel.DataAnnotations;
+using Firmeza.web.Data.Entity;
 
+namespace Firmeza.web.Data.Entity;
 public class DetalleVenta
 {
     public int Id { get; set; }

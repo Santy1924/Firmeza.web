@@ -1,4 +1,4 @@
-@model IEnumerable<Firmeza.web.Models.Entity.Venta>
+@model IEnumerable<Firmeza.web.Data.Entity.Venta>
 
 @{
     ViewData["Title"] = "Index";
@@ -53,6 +53,7 @@
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="GeneratePdf" asp-route-id="@item.Id" class="text-danger">PDF</a>
             </td>
         </tr>
 }

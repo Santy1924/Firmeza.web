@@ -1,4 +1,5 @@
 using Firmeza.web.Data;
+using Firmeza.web.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
@@ -19,6 +20,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<ExcelImportService>();
+
 
 var app = builder.Build();
 

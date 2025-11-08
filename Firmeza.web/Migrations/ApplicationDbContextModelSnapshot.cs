@@ -22,7 +22,7 @@ namespace Firmeza.web.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.Cliente", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.Cliente", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,11 +40,13 @@ namespace Firmeza.web.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Documento")
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("NombreCompleto")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Telefono")
                         .HasColumnType("text");
@@ -54,7 +56,7 @@ namespace Firmeza.web.Migrations
                     b.ToTable("Clientes");
                 });
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.DetalleVenta", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.DetalleVenta", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -83,7 +85,7 @@ namespace Firmeza.web.Migrations
                     b.ToTable("DetallesVenta");
                 });
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.Producto", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.Producto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,28 +93,29 @@ namespace Firmeza.web.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Activo")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Descripcion")
-                        .HasColumnType("text");
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("numeric");
-
-                    b.Property<string>("UnidadMedida")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Productos");
                 });
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.Venta", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.Venta", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -127,10 +130,14 @@ namespace Firmeza.web.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MetodoPago")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("TipoVenta")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("numeric");
@@ -342,15 +349,15 @@ namespace Firmeza.web.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.DetalleVenta", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.DetalleVenta", b =>
                 {
-                    b.HasOne("Firmeza.web.Models.Entity.Producto", "Producto")
+                    b.HasOne("Firmeza.web.Data.Entity.Producto", "Producto")
                         .WithMany("DetallesVenta")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Firmeza.web.Models.Entity.Venta", "Venta")
+                    b.HasOne("Firmeza.web.Data.Entity.Venta", "Venta")
                         .WithMany("DetallesVenta")
                         .HasForeignKey("VentaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -361,9 +368,9 @@ namespace Firmeza.web.Migrations
                     b.Navigation("Venta");
                 });
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.Venta", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.Venta", b =>
                 {
-                    b.HasOne("Firmeza.web.Models.Entity.Cliente", "Cliente")
+                    b.HasOne("Firmeza.web.Data.Entity.Cliente", "Cliente")
                         .WithMany("Ventas")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -423,17 +430,17 @@ namespace Firmeza.web.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.Cliente", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.Cliente", b =>
                 {
                     b.Navigation("Ventas");
                 });
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.Producto", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.Producto", b =>
                 {
                     b.Navigation("DetallesVenta");
                 });
 
-            modelBuilder.Entity("Firmeza.web.Models.Entity.Venta", b =>
+            modelBuilder.Entity("Firmeza.web.Data.Entity.Venta", b =>
                 {
                     b.Navigation("DetallesVenta");
                 });

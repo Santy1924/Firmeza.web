@@ -1,4 +1,5 @@
-using Firmeza.web.Models.Entity;
+using Firmeza.web.Data.Entity;
+using Firmeza.web.Data.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
