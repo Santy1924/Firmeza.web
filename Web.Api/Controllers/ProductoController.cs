@@ -1,6 +1,7 @@
 using Firmeza.web.Data;
 using Firmeza.web.Data.Entity;
 using Firmeza.web.Web.Api.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductoController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -16,8 +18,8 @@ namespace Web.Api.Controllers
         {
             _context = context;
         }
-
-        // GET: api/Producto
+        
+        // GET: api/Producto  (Público o autenticado)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductoDto>>> GetProductos()
         {
@@ -55,8 +57,9 @@ namespace Web.Api.Controllers
 
             return Ok(productoDto);
         }
-
-        // POST: api/Producto
+        
+        // POST: api/Producto (Sólo ADMIN)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ProductoDto>> PostProducto([FromBody] ProductoDto productoDto)
         {
@@ -78,8 +81,9 @@ namespace Web.Api.Controllers
 
             return CreatedAtAction(nameof(GetProducto), new { id = producto.Id }, productoDto);
         }
-
-        // PUT: api/Producto/5
+        
+        // PUT: api/Producto/5 (Sólo ADMIN)
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, [FromBody] ProductoDto productoDto)
         {
@@ -100,8 +104,9 @@ namespace Web.Api.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/Producto/5
+        
+        // DELETE: api/Producto/5 (Sólo ADMIN)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducto(int id)
         {
@@ -121,4 +126,5 @@ namespace Web.Api.Controllers
         }
     }
 }
+
 

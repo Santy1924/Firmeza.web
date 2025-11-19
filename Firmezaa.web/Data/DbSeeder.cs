@@ -1,3 +1,4 @@
+using Firmeza.web.Data.Entity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Firmeza.web.Data;
@@ -8,7 +9,7 @@ public static class DbSeeder
     {
         using var scope = app.Services.CreateScope();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         string[] roles = { "Administrador", "Cliente" };
 
@@ -25,7 +26,13 @@ public static class DbSeeder
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
         {
-            var user = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+            var user = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+
             await userManager.CreateAsync(user, adminPassword);
             await userManager.AddToRoleAsync(user, "Administrador");
         }

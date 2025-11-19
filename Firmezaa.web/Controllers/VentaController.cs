@@ -140,7 +140,15 @@ namespace Firmeza.web.Controllers
                 return NotFound();
             }
             ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", venta.ClienteId);
-            return View(venta);
+            return View(model: new VentaViewModel
+            {
+                Id = venta.Id,
+                Fecha = venta.Fecha,
+                ClienteId = venta.ClienteId,
+                MetodoPago = venta.MetodoPago,
+                TipoVenta = venta.TipoVenta,
+                Total = venta.Total
+            });
         }
 
         // POST: Venta/Edit/5

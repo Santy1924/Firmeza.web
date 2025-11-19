@@ -1,6 +1,7 @@
 using Firmeza.web.Data;
 using Firmeza.web.Data.Entity;
 using Firmeza.web.Web.Api.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ namespace Firmeza.web.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ClienteController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

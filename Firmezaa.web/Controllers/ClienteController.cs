@@ -98,9 +98,7 @@ namespace Firmeza.web.Controllers
                 return View(model);
             }
         }
-
-
-
+        
         // GET: Cliente/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -114,8 +112,22 @@ namespace Firmeza.web.Controllers
             {
                 return NotFound();
             }
-            return View(cliente);
+
+            // Convertir Cliente -> ClienteViewModel
+            var model = new ClienteViewModel
+            {
+                Id = cliente.Id,
+                NombreCompleto = cliente.NombreCompleto,
+                Documento = cliente.Documento,
+                Correo = cliente.Correo,
+                Telefono = cliente.Telefono,
+                Direccion = cliente.Direccion,
+                Activo = cliente.Activo
+            };
+
+            return View(model); // <-- Enviar ViewModel
         }
+
 
         // POST: Cliente/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
