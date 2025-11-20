@@ -25,5 +25,6 @@ namespace Firmeza.web.Data.Entity
         public bool Activo { get; set; } = true;
 
         public ICollection<Venta>? Ventas { get; set; }
+        public string UserId { get; set; }
     }
 }

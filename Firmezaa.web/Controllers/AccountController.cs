@@ -41,22 +41,24 @@ namespace Firmeza.web.Controllers
             }
 
             // Verificar contraseña
-            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(
+                model.Email,
+                model.Password,
+                model.RememberMe,            // ← ESTO hace el cookie persistente
+                lockoutOnFailure: false
+            );
 
             if (result.Succeeded)
             {
-                // Obtener roles del usuario
-                var roles = await _userManager.GetRolesAsync(user);
+                var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(model.Email));
 
                 if (roles.Contains("Cliente"))
                 {
-                    // Bloquear acceso al panel Razor
+                    await _signInManager.SignOutAsync(); // evitar dejar la sesión iniciada
                     ModelState.AddModelError(string.Empty, "No tiene permisos para acceder al panel administrativo.");
                     return View(model);
                 }
 
-                // Iniciar sesión normalmente si es Administrador
-                await _signInManager.SignInAsync(user, isPersistent: model.RememberMe);
                 return RedirectToLocal(returnUrl);
             }
 

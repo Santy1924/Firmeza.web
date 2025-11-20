@@ -17,6 +17,12 @@ public class ClienteViewModel
     [EmailAddress(ErrorMessage = "El correo ingresado no es válido.")]
     [StringLength(100, ErrorMessage = "El correo no puede superar los 100 caracteres.")]
     public string? Correo { get; set; }
+    
+    [Required]
+    [DataType(DataType.Password)]
+    [Compare("Password", ErrorMessage = "Las contraseñas no coinciden.")]
+    public string Password { get; set; }
+
 
     [Phone(ErrorMessage = "El número de teléfono no es válido.")]
     [StringLength(20, ErrorMessage = "El número de teléfono no puede superar los 20 caracteres.")]
@@ -26,4 +32,5 @@ public class ClienteViewModel
     public string? Direccion { get; set; }
 
     public bool Activo { get; set; } = true;
+    
 }

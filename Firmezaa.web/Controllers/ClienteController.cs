@@ -9,17 +9,20 @@ using Firmeza.web.Data.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Firmeza.web.Data.Entity;
 using Firmeza.web.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Firmeza.web.Controllers
 {
     [Authorize(Roles = "Administrador")]
     public class ClienteController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public ClienteController(ApplicationDbContext context)
+        public ClienteController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Cliente
@@ -66,7 +69,6 @@ namespace Firmeza.web.Controllers
 
             try
             {
-                // Verificar duplicado (opcional)
                 var existe = await _context.Clientes.AnyAsync(c => c.Documento == model.Documento);
                 if (existe)
                 {
@@ -74,6 +76,30 @@ namespace Firmeza.web.Controllers
                     return View(model);
                 }
 
+                // 1. Crear usuario Identity
+                var user = new ApplicationUser
+                {
+                    UserName = model.Correo,
+                    Email = model.Correo
+                };
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+
+                    // Volver a mostrar la vista con errores, sin perder datos
+                    return View(model);
+                }
+
+                // 2. Asignar rol Cliente
+                await _userManager.AddToRoleAsync(user, "Cliente");
+
+                // 3. Crear registro Cliente
                 var cliente = new Cliente
                 {
                     NombreCompleto = model.NombreCompleto,
@@ -81,23 +107,27 @@ namespace Firmeza.web.Controllers
                     Correo = model.Correo,
                     Telefono = model.Telefono,
                     Direccion = model.Direccion,
-                    Activo = model.Activo
+                    Activo = model.Activo,
+                    UserId = user.Id
                 };
 
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "El cliente se ha registrado exitosamente.";
+                TempData["SuccessMessage"] = "Cliente creado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                // Si usas ILogger
-                //_logger.LogError(ex, "Error al crear cliente");
-                TempData["ErrorMessage"] = "Ocurrió un error al registrar el cliente. Por favor intenta nuevamente.";
+                TempData["ErrorMessage"] = 
+                    $"ERROR REAL: {ex.Message} | INNER: {ex.InnerException?.Message}";
+
                 return View(model);
             }
+
         }
+
+
         
         // GET: Cliente/Edit/5
         public async Task<IActionResult> Edit(int? id)
