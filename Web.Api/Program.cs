@@ -90,6 +90,10 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddControllers();
 
+// EMAIL SERVICE
+builder.Services.Configure<Firmeza.web.Web.Api.Services.EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<Firmeza.web.Web.Api.Services.IEmailService, Firmeza.web.Web.Api.Services.GmailEmailService>();
+
 var app = builder.Build();
 
 // MIDDLEWARE

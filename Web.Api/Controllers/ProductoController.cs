@@ -59,7 +59,6 @@ namespace Web.Api.Controllers
         }
         
         // POST: api/Producto (Sólo ADMIN)
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ProductoDto>> PostProducto([FromBody] ProductoDto productoDto)
         {
@@ -83,7 +82,6 @@ namespace Web.Api.Controllers
         }
         
         // PUT: api/Producto/5 (Sólo ADMIN)
-        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, [FromBody] ProductoDto productoDto)
         {
@@ -106,7 +104,6 @@ namespace Web.Api.Controllers
         }
         
         // DELETE: api/Producto/5 (Sólo ADMIN)
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducto(int id)
         {

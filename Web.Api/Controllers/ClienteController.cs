@@ -15,11 +15,13 @@ namespace Firmeza.web.Controllers.Api
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Firmeza.web.Web.Api.Services.IEmailService _emailService;
 
-        public ClienteController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ClienteController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, Firmeza.web.Web.Api.Services.IEmailService emailService)
         {
             _context = context;
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         // GET: api/Cliente
@@ -96,6 +98,19 @@ namespace Firmeza.web.Controllers.Api
 
             _context.Clientes.Add(cliente);
             await _context.SaveChangesAsync();
+
+            // Enviar correo de bienvenida
+            try
+            {
+                string subject = "Bienvenido a Firmeza Web";
+                string body = $"<h1>Hola {model.NombreCompleto},</h1><p>Gracias por registrarte en nuestra plataforma.</p>";
+                await _emailService.SendEmailAsync(model.Correo, subject, body);
+            }
+            catch (Exception ex)
+            {
+                // Loguear error pero no fallar la request
+                Console.WriteLine($"Error enviando correo: {ex.Message}");
+            }
 
             var clienteDTO = new ClienteDto
             {
