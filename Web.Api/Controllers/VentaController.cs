@@ -67,56 +67,66 @@ namespace Web.Api.Controllers
 
         // POST: api/Venta
         [HttpPost]
-        public async Task<ActionResult<VentaDto>> PostVenta(Venta venta)
+        public async Task<ActionResult<VentaDto>> PostVenta([FromBody] VentaCreateUpdateDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var cliente = await _context.Clientes.FindAsync(venta.ClienteId);
+            var cliente = await _context.Clientes.FindAsync(model.ClienteId);
             if (cliente == null)
-                return BadRequest($"El cliente con ID {venta.ClienteId} no existe.");
+                return BadRequest($"El cliente con ID {model.ClienteId} no existe.");
 
-            venta.Fecha = DateTime.Now;
+            var venta = new Venta
+            {
+                ClienteId = model.ClienteId,
+                Fecha = DateTime.UtcNow,
+                MetodoPago = model.MetodoPago,
+                TipoVenta = model.TipoVenta,
+                Total = model.Total
+            };
+
             _context.Ventas.Add(venta);
             await _context.SaveChangesAsync();
 
-            // Convertimos la venta creada a DTO
             var ventaDto = new VentaDto
             {
                 Id = venta.Id,
                 Fecha = venta.Fecha,
                 ClienteNombre = cliente.NombreCompleto,
-                Total = venta.Total,
                 MetodoPago = venta.MetodoPago,
-                TipoVenta = venta.TipoVenta
+                TipoVenta = venta.TipoVenta,
+                Total = venta.Total
             };
 
             return CreatedAtAction(nameof(GetVenta), new { id = venta.Id }, ventaDto);
         }
 
+
         // PUT: api/Venta/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVenta(int id, Venta venta)
+        public async Task<IActionResult> PutVenta(int id, [FromBody] VentaCreateUpdateDto model)
         {
-            if (id != venta.Id)
-                return BadRequest("El ID de la venta no coincide.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            _context.Entry(venta).State = EntityState.Modified;
+            var venta = await _context.Ventas.FindAsync(id);
+            if (venta == null)
+                return NotFound(new { mensaje = "Venta no encontrada" });
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VentaExists(id))
-                    return NotFound();
-                else
-                    throw;
-            }
+            var cliente = await _context.Clientes.FindAsync(model.ClienteId);
+            if (cliente == null)
+                return BadRequest($"El cliente con ID {model.ClienteId} no existe.");
+
+            venta.ClienteId = model.ClienteId;
+            venta.MetodoPago = model.MetodoPago;
+            venta.TipoVenta = model.TipoVenta;
+            venta.Total = model.Total;
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
 
         // DELETE: api/Venta/5
         [HttpDelete("{id}")]
