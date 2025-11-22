@@ -67,6 +67,7 @@ namespace Firmeza.web.Controllers.Api
 
         // POST: api/Cliente
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<ClienteDto>> PostCliente([FromBody] ClienteDto model)
         {
             if (!ModelState.IsValid)
@@ -83,6 +84,8 @@ namespace Firmeza.web.Controllers.Api
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
+
+            await _userManager.AddToRoleAsync(user, "Cliente");
 
             // Crear registro Cliente
             var cliente = new Cliente
