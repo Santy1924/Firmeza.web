@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewData["Title"] - Firmeza Admin</title>
+    <title>@ViewData["Title"] - Panel Administrativo</title>
 
     <!-- Bootstrap -->
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -22,7 +22,7 @@
 <div class="wrapper">
     <!-- Sidebar -->
     <aside class="sidebar d-flex flex-column">
-        <h3>Firmeza Admin</h3>
+        <h3>Panel Administrativo</h3>
         <nav>
             <a asp-controller="Dashboard" asp-action="Index"><i class="fa-solid fa-house"></i> Inicio</a>
             <a asp-controller="Producto" asp-action="Index"><i class="fa-solid fa-box"></i> Productos</a>
@@ -42,7 +42,7 @@
     <!-- Contenido -->
     <main class="content">
         <div class="user-bar">
-            👋 Hola, @User.Identity.Name
+            Administrador
         </div>
         <div class="page-body">
             @RenderBody()

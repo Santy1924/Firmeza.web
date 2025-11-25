@@ -5,6 +5,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Firmeza.web.Data.Entity;
+using Firmeza.web.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Web.Api.Controllers
 {
@@ -13,11 +15,13 @@ namespace Web.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
 
-        public AuthController(UserManager<ApplicationUser> userManager, IConfiguration config)
+        public AuthController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IConfiguration config)
         {
             _userManager = userManager;
+            _context = context;
             _config = config;
         }
 
@@ -28,24 +32,29 @@ namespace Web.Api.Controllers
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
                 return Unauthorized(new { mensaje = "Credenciales incorrectas" });
 
+            // Get client name from Cliente table
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.UserId == user.Id);
+            var displayName = cliente?.NombreCompleto ?? user.Email;
+
             var roles = await _userManager.GetRolesAsync(user);
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email),
+                new Claim("email", user.Email ?? ""),
+                new Claim("name", displayName ?? ""),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? ""));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(double.Parse(_config["Jwt:ExpireMinutes"])),
+                expires: DateTime.Now.AddMinutes(double.Parse(_config["Jwt:ExpireMinutes"] ?? "60")),
                 signingCredentials: creds
             );
 
@@ -58,7 +67,7 @@ namespace Web.Api.Controllers
 
     public class LoginDto
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

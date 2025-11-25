@@ -22,15 +22,17 @@ const Cart = () => {
                             <h4>{item.nombre}</h4>
                             <p>${item.precioUnitario}</p>
                         </div>
-                        <div className="item-controls">
-                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                            <span>{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                            <button className="remove-btn" onClick={() => removeFromCart(item.id)}>Eliminar</button>
+                        <div className="item-actions">
+                            <div className="item-controls">
+                                <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                                <span>{item.quantity}</span>
+                                <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                            </div>
+                            <div className="item-total">
+                                <p>${(item.precioUnitario * item.quantity).toFixed(2)}</p>
+                            </div>
                         </div>
-                        <div className="item-total">
-                            <p>${(item.precioUnitario * item.quantity).toFixed(2)}</p>
-                        </div>
+                        <button className="remove-btn" onClick={() => removeFromCart(item.id)}>Eliminar</button>
                     </div>
                 ))}
             </div>

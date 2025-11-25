@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -7,6 +7,38 @@ import ProductList from './components/ProductList';
 import Cart from './components/Cart';
 import { CartProvider } from './context/CartContext';
 import './App.css';
+
+function Dashboard() {
+  const { logout, user } = useAuth();
+
+  return (
+    <div className="dashboard-container">
+      <header className="dashboard-header">
+        <div className="header-content">
+          <h1>Firmeza</h1>
+          <div className="user-info">
+            <span>Hola, {user ? (user.name || user.email || 'Usuario') : 'Usuario'}</span>
+            <button onClick={logout} className="btn-logout">
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="main-content">
+        <div className="catalog-section">
+          <h2>Catálogo de Productos</h2>
+          <ProductList />
+        </div>
+        <div className="cart-section">
+          <div className="sticky-cart">
+            <Cart />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -18,21 +50,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={
-                <div className="dashboard">
-                  <h1>Bienvenido a Firmeza Web</h1>
-                  <p>Has iniciado sesión correctamente.</p>
-                  <div className="main-content" style={{ display: 'flex', gap: '20px' }}>
-                    <div className="catalog-section" style={{ flex: 2 }}>
-                      <h2>Catálogo de Productos</h2>
-                      <ProductList />
-                    </div>
-                    <div className="cart-section" style={{ flex: 1 }}>
-                      <Cart />
-                    </div>
-                  </div>
-                </div>
-              } />
+              <Route path="/" element={<Dashboard />} />
             </Route>
           </Routes>
         </Router>

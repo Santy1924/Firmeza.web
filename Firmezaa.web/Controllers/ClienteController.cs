@@ -202,6 +202,26 @@ namespace Firmeza.web.Controllers
             cliente.Direccion = model.Direccion;
             cliente.Activo = model.Activo;
 
+            // Actualizar password del usuario Identity
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                var user = await _userManager.FindByIdAsync(cliente.UserId);
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                    
+                    if (!result.Succeeded)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View(model);
+                    }
+                }
+            }
+
             _context.Update(cliente);
             await _context.SaveChangesAsync();
 
@@ -255,6 +275,16 @@ namespace Firmeza.web.Controllers
             var cliente = await _context.Clientes.FindAsync(id);
             if (cliente != null)
             {
+                // Eliminar usuario de Identity asociado
+                if (!string.IsNullOrEmpty(cliente.UserId))
+                {
+                    var user = await _userManager.FindByIdAsync(cliente.UserId);
+                    if (user != null)
+                    {
+                        await _userManager.DeleteAsync(user);
+                    }
+                }
+
                 _context.Clientes.Remove(cliente);
             }
 

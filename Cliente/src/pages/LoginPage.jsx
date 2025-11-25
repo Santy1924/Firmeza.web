@@ -21,33 +21,37 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="auth-container">
-            <h2>Iniciar Sesión</h2>
-            {error && <p className="error">{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+        <div className="login-container">
+            <div className="login-card">
+                <h2>Iniciar Sesión</h2>
+                {error && <div className="error-message">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            placeholder="ejemplo@correo.com"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Contraseña</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            placeholder="********"
+                        />
+                    </div>
+                    <button type="submit" className="login-btn">Ingresar</button>
+                </form>
+                <div className="register-link">
+                    ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
                 </div>
-                <div className="form-group">
-                    <label>Contraseña:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Ingresar</button>
-            </form>
-            <p>
-                ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
-            </p>
+            </div>
         </div>
     );
 };

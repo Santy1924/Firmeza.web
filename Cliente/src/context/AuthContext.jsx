@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
+                console.log('Decoded JWT token:', decoded);
                 // Check expiration
                 if (decoded.exp * 1000 < Date.now()) {
                     logout();

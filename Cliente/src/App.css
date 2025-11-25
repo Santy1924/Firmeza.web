@@ -95,20 +95,56 @@
 
 .cart-item {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.item-actions {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
-  padding: 10px 0;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 1px;
 }
 
 .item-controls button {
-  margin: 0 5px;
-  padding: 2px 8px;
+  padding: 4px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.item-controls button:hover {
+  background-color: #0056b3;
+}
+
+.item-controls span {
+  min-width: 30px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .remove-btn {
   background-color: #dc3545 !important;
-  margin-left: 10px !important;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.remove-btn:hover {
+  background-color: #c82333 !important;
 }
 
 .cart-summary {
@@ -143,4 +179,173 @@
 
 .checkout-btn:hover {
   background-color: #218838;
+}
+
+/* Login Page Styles */
+/* Login Page Styles */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  /* background-color removed to show body background */
+}
+
+.login-card {
+  background-color: rgb(37, 37, 37);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: #fff;
+  /* White text */
+}
+
+.login-card h2 {
+  margin-bottom: 20px;
+  color: #fff;
+  /* White text */
+  font-size: 24px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #eee;
+  /* Light gray text */
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  /* Ensure padding doesn't affect width */
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #3e4042;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.register-link {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #afafaf;
+  /* Light gray text */
+}
+
+.register-link a {
+  color: #ffffff;
+  /* Lighter blue for better contrast on dark */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+  min-height: 100vh;
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
+.dashboard-header {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.main-content {
+  max-width: 1280px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+}
+
+.catalog-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.sticky-cart {
+  position: sticky;
+  top: 100px;
+  /* Adjust based on header height + margin */
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+
+  .sticky-cart {
+    position: static;
+  }
 }
