@@ -9,7 +9,7 @@ namespace Web.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Cliente")]
     public class ProductoController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

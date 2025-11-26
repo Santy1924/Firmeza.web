@@ -10,7 +10,7 @@ namespace Firmeza.web.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Cliente")]
     public class ClienteController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
