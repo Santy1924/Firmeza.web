@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Firmeza.web.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador, Admin")]
     public class ClienteController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

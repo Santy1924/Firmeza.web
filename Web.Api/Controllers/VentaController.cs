@@ -101,6 +101,81 @@ namespace Web.Api.Controllers
             return CreatedAtAction(nameof(GetVenta), new { id = venta.Id }, ventaDto);
         }
 
+        // POST: api/Venta/checkout
+        [HttpPost("checkout")]
+        public async Task<ActionResult<VentaDto>> Checkout([FromBody] CheckoutDto checkoutDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (checkoutDto.Items == null || !checkoutDto.Items.Any())
+                return BadRequest("El carrito está vacío");
+
+            // Get current user's cliente ID
+            var userEmail = User.FindFirst("email")?.Value 
+                ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+                ?? User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+            
+            if (string.IsNullOrEmpty(userEmail))
+                return Unauthorized("No se pudo identificar al usuario");
+
+            var cliente = await _context.Clientes
+                .FirstOrDefaultAsync(c => c.Correo == userEmail);
+
+            if (cliente == null)
+                return BadRequest("Cliente no encontrado");
+
+            // Validate all products exist and calculate total
+            decimal total = 0;
+            var detalles = new List<DetalleVenta>();
+
+            foreach (var item in checkoutDto.Items)
+            {
+                var producto = await _context.Productos.FindAsync(item.ProductoId);
+                if (producto == null)
+                    return BadRequest($"Producto con ID {item.ProductoId} no encontrado");
+
+                if (item.Cantidad <= 0)
+                    return BadRequest($"Cantidad inválida para producto {producto.Nombre}");
+
+                var subtotal = producto.PrecioUnitario * item.Cantidad;
+                total += subtotal;
+
+                detalles.Add(new DetalleVenta
+                {
+                    ProductoId = item.ProductoId,
+                    Cantidad = item.Cantidad,
+                    PrecioUnitario = producto.PrecioUnitario
+                });
+            }
+
+            // Create venta
+            var venta = new Venta
+            {
+                ClienteId = cliente.Id,
+                Fecha = DateTime.UtcNow,
+                MetodoPago = checkoutDto.MetodoPago,
+                TipoVenta = checkoutDto.TipoVenta,
+                Total = total,
+                DetallesVenta = detalles
+            };
+
+            _context.Ventas.Add(venta);
+            await _context.SaveChangesAsync();
+
+            var ventaDto = new VentaDto
+            {
+                Id = venta.Id,
+                Fecha = venta.Fecha,
+                ClienteNombre = cliente.NombreCompleto,
+                MetodoPago = venta.MetodoPago,
+                TipoVenta = venta.TipoVenta,
+                Total = venta.Total
+            };
+
+            return CreatedAtAction(nameof(GetVenta), new { id = venta.Id }, ventaDto);
+        }
+
 
         // PUT: api/Venta/5
         [HttpPut("{id}")]

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -6,17 +6,40 @@ const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
+    // Check for stored error on mount
+    useEffect(() => {
+        const storedError = sessionStorage.getItem('loginError');
+        if (storedError) {
+            setError(storedError);
+            sessionStorage.removeItem('loginError');
+        }
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Form submitted");
         setError('');
+        setLoading(true);
         try {
+            console.log("Attempting login...");
             await login(email, password);
+            console.log("Login successful, navigating...");
             navigate('/');
         } catch (err) {
-            setError('Credenciales inválidas o error en el servidor');
+            console.log("ERROR CATCH LOGINPAGE", err);
+            console.log("Error message:", err.message);
+            const errorMsg = err.message || 'Credenciales inválidas o error en el servidor';
+            console.log("Setting error state to:", errorMsg);
+            // Store in sessionStorage in case of reload
+            sessionStorage.setItem('loginError', errorMsg);
+            setError(errorMsg);
+        } finally {
+            setLoading(false);
+            console.log("Loading set to false");
         }
     };
 
@@ -46,7 +69,9 @@ const LoginPage = () => {
                             placeholder="********"
                         />
                     </div>
-                    <button type="submit" className="login-btn">Ingresar</button>
+                    <button type="submit" className="login-btn" disabled={loading}>
+                        {loading ? 'Ingresando...' : 'Ingresar'}
+                    </button>
                 </form>
                 <div className="register-link">
                     ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>

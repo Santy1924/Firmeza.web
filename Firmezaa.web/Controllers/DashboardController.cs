@@ -4,7 +4,7 @@ using Firmeza.web.Data;
 
 namespace Firmeza.web.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador, Admin")]
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -10,10 +10,9 @@ using Firmeza.web.Data.Entity;
 using Firmeza.web.Models.ViewModels;
 using Firmeza.web.Services;
 using Microsoft.AspNetCore.Authorization;
-
 namespace Firmeza.web.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador, Admin")]
     public class VentaController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -51,12 +51,18 @@ namespace Firmeza.web.Controllers
             if (result.Succeeded)
             {
                 var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(model.Email));
+                Console.WriteLine($"[DEBUG] User {model.Email} has roles: {string.Join(", ", roles)}");
 
                 if (roles.Contains("Cliente"))
                 {
                     await _signInManager.SignOutAsync(); // evitar dejar la sesión iniciada
                     ModelState.AddModelError(string.Empty, "No tiene permisos para acceder al panel administrativo.");
                     return View(model);
+                }
+
+                if (roles.Contains("Administrador") || roles.Contains("Admin"))
+                {
+                    return RedirectToAction("Index", "Dashboard");
                 }
 
                 return RedirectToLocal(returnUrl);

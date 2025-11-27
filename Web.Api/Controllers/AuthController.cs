@@ -32,6 +32,10 @@ namespace Web.Api.Controllers
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
                 return Unauthorized(new { mensaje = "Credenciales incorrectas" });
 
+            // Verificar que sea Cliente
+            if (!await _userManager.IsInRoleAsync(user, "Cliente"))
+                return Unauthorized(new { mensaje = "Acceso denegado. Solo clientes pueden ingresar." });
+
             // Get client name from Cliente table
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.UserId == user.Id);
             var displayName = cliente?.NombreCompleto ?? user.Email;

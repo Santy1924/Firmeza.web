@@ -26,10 +26,16 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            // Optional: Trigger logout or redirect
-            // For now we just reject, but AuthContext could listen to this
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+            // Clear token but don't redirect - let the component handle it
+            // This allows checkout errors to be displayed properly
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/login' && currentPath !== '/register') {
+                localStorage.removeItem('token');
+                // Only redirect if we're not already handling an error in a component
+                if (!error.config.url.includes('/checkout')) {
+                    window.location.href = '/login';
+                }
+            }
         }
         return Promise.reject(error);
     }

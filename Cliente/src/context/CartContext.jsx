@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import axios from '../api/axios';
 
 const CartContext = createContext();
 
@@ -63,6 +64,31 @@ export const CartProvider = ({ children }) => {
         setCartItems([]);
     };
 
+    const checkout = async (metodoPago = 'Efectivo', tipoVenta = 'Contado') => {
+        if (cartItems.length === 0) {
+            throw new Error('El carrito está vacío');
+        }
+
+        const checkoutData = {
+            metodoPago,
+            tipoVenta,
+            items: cartItems.map(item => ({
+                productoId: item.id,
+                cantidad: item.quantity
+            }))
+        };
+
+        try {
+            const response = await axios.post('/Venta/checkout', checkoutData);
+            clearCart();
+            return response.data;
+        } catch (error) {
+            console.error('Checkout failed:', error);
+            const errorMessage = error.response?.data?.mensaje || error.response?.data || error.message || 'Error al procesar el pago';
+            throw new Error(errorMessage);
+        }
+    };
+
     const value = {
         cartItems,
         subtotal,
@@ -71,7 +97,8 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         updateQuantity,
-        clearCart
+        clearCart,
+        checkout
     };
 
     return (

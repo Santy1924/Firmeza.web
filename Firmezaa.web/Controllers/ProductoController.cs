@@ -13,7 +13,7 @@ using Firmeza.web.Services;
 
 namespace Firmeza.web.Controllers
 {
-    [Authorize(Roles = "Administrador")] // Solo los usuarios con este rol pueden acceder
+    [Authorize(Roles = "Administrador, Admin")] // Solo los usuarios con este rol pueden acceder
     public class ProductoController : Controller
     {
         private readonly ApplicationDbContext _context;

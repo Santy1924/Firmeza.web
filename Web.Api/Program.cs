@@ -45,7 +45,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy =>
-        policy.RequireRole("Admin"));
+        policy.RequireRole("Admin", "Administrador"));
 
     options.AddPolicy("ClienteOnly", policy =>
         policy.RequireRole("Cliente"));
@@ -120,7 +120,7 @@ using (var scope = app.Services.CreateScope())
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-    string[] roles = { "Admin", "Cliente" };
+    string[] roles = { "Admin", "Administrador", "Cliente" };
 
     foreach (var role in roles)
     {

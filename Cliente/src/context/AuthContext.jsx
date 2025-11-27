@@ -37,13 +37,21 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const response = await axios.post('/Auth/login', { email, password });
+
+            // Si el backend devuelve 200 pero sin token → error
+            if (!response.data.token) {
+                throw new Error("Acceso denegado");
+            }
+
             const newToken = response.data.token;
             localStorage.setItem('token', newToken);
             setToken(newToken);
             return true;
         } catch (error) {
             console.error("Login failed", error);
-            throw error;
+            // Extraer el mensaje del servidor si existe
+            const errorMessage = error.response?.data?.mensaje || error.message || "Error desconocido";
+            throw new Error(errorMessage);
         }
     };
 
