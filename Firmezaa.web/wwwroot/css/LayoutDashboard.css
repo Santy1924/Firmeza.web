@@ -1,93 +1,178 @@
-/* === Layout general === */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: "Segoe UI", sans-serif;
+/* === Sistema de diseño moderno === */
+:root {
+    --primary: #2563eb;          /* Azul principal */
+    --primary-light: #3b82f6;
+    --bg-light: #f3f4f6;
+    --text-dark: #1f2937;
+    --sidebar-bg: #1e293b;
+    --sidebar-hover: #334155;
+    --card-bg: #ffffff;
+    --radius: 14px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+/* === Reset === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: "Inter", "Segoe UI", sans-serif;
+    background: var(--bg-light);
+    color: var(--text-dark);
+}
+
+/* === Wrapper general === */
 .wrapper {
     display: flex;
     min-height: 100vh;
 }
 
-/* === Sidebar === */
+/* === Sidebar moderno === */
 .sidebar {
-    width: 240px;
-    background-color: #1b1f23;
+    width: 250px;
+    background-color: var(--sidebar-bg);
     color: white;
     display: flex;
     flex-direction: column;
-    padding: 1.5rem 1rem;
-    height: 100vh;
-    box-sizing: border-box;
+    padding: 2rem 1rem;
 }
 
 .sidebar h3 {
     text-align: center;
     margin-bottom: 2rem;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    font-weight: 600;
 }
 
 .sidebar nav a {
-    color: #ddd;
+    color: #e2e8f0;
     text-decoration: none;
-    margin: 0.4rem 0;
+    margin: 0.6rem 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 0.4rem 0.5rem;
-    border-radius: 6px;
-    transition: background 0.3s;
+    gap: 12px;
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: 0.25s;
+    font-weight: 500;
 }
 
 .sidebar nav a:hover {
-    background-color: #2d3338;
+    background-color: var(--sidebar-hover);
     color: #fff;
+    transform: translateX(4px);
 }
 
 .logout {
     margin-top: auto;
-    background-color: #cc0000;
+    background-color: #dc2626;
     color: white;
+    padding: 0.7rem;
+    border-radius: 10px;
     text-align: center;
-    padding: 0.6rem;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background 0.3s;
-    display: block;
+    font-weight: 500;
+    transition: 0.25s;
 }
 
 .logout:hover {
-    background-color: #b52a38;
+    background-color: #b91c1c;
 }
 
 /* === Contenido principal === */
 .content {
     flex: 1;
-    background-color: #f8f9fa;
-    padding: 1.5rem 2rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
 }
 
+/* === Top bar estilo moderno === */
 .user-bar {
-    background-color: #e9ecef;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    font-weight: 500;
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    padding: 1rem 1.6rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-bottom: 3px solid var(--primary-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* === Dashboard === */
+/* Ejemplo para agregar avatar luego: */
+.user-bar .user {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* === Contenido debajo === */
+.page-body {
+    padding: 2rem;
+}
+
+/* === Cards modernas === */
 .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.4rem;
+    border: none;
+    transition: 0.25s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* Títulos */
+.card-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #374151;
+    margin-bottom: 0.4rem;
+}
+
+/* Totales grandes */
+.card .display-6 {
+    font-size: 2.3rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* === Tablas modernas === */
+.table {
+    background: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.table thead {
+    background: var(--primary);
+    color: white;
+}
+
+.table tbody tr:hover {
+    background: #eff6ff;
+}
+
+/* === Botones === */
+.btn-primary {
+    background: var(--primary);
+    border: none;
+    font-weight: 600;
     border-radius: 10px;
 }
 
-.card-title {
-    font-weight: 600;
-}
-
-.display-6 {
-    font-size: 2.5rem;
+.btn-primary:hover {
+    background: var(--primary-light);
 }
 
 /* === Responsive === */
@@ -99,13 +184,18 @@ body, html {
     .sidebar {
         width: 100%;
         flex-direction: row;
-        justify-content: space-around;
+        flex-wrap: wrap;
+        justify-content: center;
+        height: auto;
+        padding: 1rem;
     }
 
-    .logout {
-        margin-top: 0;
-        font-size: 0.9rem;
+    .sidebar nav a {
+        flex: 1 1 40%;
+        justify-content: center;
+    }
+
+    .user-bar {
+        font-size: 1.1rem;
     }
 }
-
-

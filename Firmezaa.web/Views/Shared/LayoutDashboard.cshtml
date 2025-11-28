@@ -13,7 +13,7 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Estilos del dashboard -->
-    <link href="~/css/LayoutDashboard.css" rel="stylesheet" />
+    <link href="~/css/LayoutDashboard.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
 
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/a2d04feffa6.js" crossorigin="anonymous"></script>
@@ -51,5 +51,9 @@
 </div>
 
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+@* ✔️ ESTA ES LA LÍNEA QUE FALTABA *@
+@RenderSection("Scripts", required: false)
+
 </body>
 </html>
