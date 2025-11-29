@@ -1,0 +1,2 @@
+-- Script de inicialización de base de datos
+-- Este script se ejecuta automáticamente en el contenedor PostgreSQL

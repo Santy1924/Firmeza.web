@@ -1,0 +1,15 @@
+bin/
+obj/
+.git
+.gitignore
+README.md
+.vscode
+.DS_Store
+*.log
+.env
+Firmezaa.web/appsettings*.json
+Firmezaa.web/Views
+Firmezaa.web/wwwroot
+Firmezaa.web/Controllers
+Firmezaa.web/Properties
+

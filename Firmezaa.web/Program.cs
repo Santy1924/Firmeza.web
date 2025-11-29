@@ -66,8 +66,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// 👇 IMPORTANTE: ejecutar el seeder ANTES de correr la app
-await DbSeeder.SeedRolesAndAdminAsync(app);
+// 👇 IMPORTANTE: ejecutar el seeder sin bloquear la app
+_ = Task.Run(async () => await DbSeeder.SeedRolesAndAdminAsync(app));
 
 app.Run();
 

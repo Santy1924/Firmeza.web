@@ -39,6 +39,40 @@ namespace Web.Api.Controllers
             return Ok(ventas);
         }
 
+        // GET: api/Venta/mis-compras
+        [HttpGet("mis-compras")]
+        public async Task<ActionResult<IEnumerable<VentaDto>>> GetMyPurchases()
+        {
+            var userEmail = User.FindFirst("email")?.Value 
+                ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+                ?? User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
+                return Unauthorized("No se pudo identificar al usuario");
+
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Correo == userEmail);
+            
+            // If cliente record doesn't exist yet, return empty list instead of error
+            if (cliente == null)
+                return Ok(new List<VentaDto>());
+
+            var ventas = await _context.Ventas
+                .Where(v => v.ClienteId == cliente.Id)
+                .OrderByDescending(v => v.Fecha)
+                .Select(v => new VentaDto
+                {
+                    Id = v.Id,
+                    Fecha = v.Fecha,
+                    ClienteNombre = cliente.NombreCompleto,
+                    Total = v.Total,
+                    MetodoPago = v.MetodoPago,
+                    TipoVenta = v.TipoVenta
+                })
+                .ToListAsync();
+
+            return Ok(ventas);
+        }
+
         // GET: api/Venta/5
         [HttpGet("{id}")]
         public async Task<ActionResult<VentaDto>> GetVenta(int id)

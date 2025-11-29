@@ -2,6 +2,25 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+<div class="hero-section">
+    <h1 class="hero-title">Bienvenido a Firmezaa</h1>
+    <p class="hero-subtitle">
+        Gestiona tus productos, clientes y ventas de manera eficiente y moderna.
+        <br />
+        Todo lo que necesitas para tu negocio en un solo lugar.
+    </p>
+    
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg px-4">Iniciar Sesión</a>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary btn-lg px-4">Registrarse</a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary btn-lg px-4">Ir al Dashboard</a>
+        </div>
+    }
 </div>

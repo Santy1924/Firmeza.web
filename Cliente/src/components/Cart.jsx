@@ -44,21 +44,20 @@ const Cart = () => {
             <div className="cart-items">
                 {cartItems.map((item) => (
                     <div key={item.id} className="cart-item">
-                        <div className="item-info">
+                        <div className="item-header">
                             <h4>{item.nombre}</h4>
-                            <p>${item.precioUnitario}</p>
+                            <span className="item-price">${(item.precioUnitario * item.quantity).toFixed(2)}</span>
                         </div>
-                        <div className="item-actions">
-                            <div className="item-controls">
-                                <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                                <span>{item.quantity}</span>
-                                <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                            </div>
-                            <div className="item-total">
-                                <p>${(item.precioUnitario * item.quantity).toFixed(2)}</p>
-                            </div>
+
+                        <div className="item-controls">
+                            <button className="qty-btn" onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                            <span className="qty-val">{item.quantity}</span>
+                            <button className="qty-btn" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+
+                            <button className="btn-remove" onClick={() => removeFromCart(item.id)}>
+                                Eliminar
+                            </button>
                         </div>
-                        <button className="remove-btn" onClick={() => removeFromCart(item.id)}>Eliminar</button>
                     </div>
                 ))}
             </div>

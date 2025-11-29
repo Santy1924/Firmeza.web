@@ -96,6 +96,20 @@ builder.Services.AddTransient<Firmeza.web.Web.Api.Services.IEmailService, Firmez
 
 var app = builder.Build();
 
+// APPLY MIGRATIONS
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.Migrate();
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error aplicando migraciones: {ex.Message}");
+}
+
 // MIDDLEWARE
 if (app.Environment.IsDevelopment())
 {
@@ -115,18 +129,25 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // SEED ROLES (Admin / Cliente)
-using (var scope = app.Services.CreateScope())
+try
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-    string[] roles = { "Admin", "Administrador", "Cliente" };
-
-    foreach (var role in roles)
+    using (var scope = app.Services.CreateScope())
     {
-        if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role));
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        string[] roles = { "Admin", "Administrador", "Cliente" };
+
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+                await roleManager.CreateAsync(new IdentityRole(role));
+        }
     }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error seeding roles: {ex.Message}");
 }
 
 // MAP CONTROLLERS

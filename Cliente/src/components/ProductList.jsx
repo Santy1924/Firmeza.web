@@ -35,10 +35,19 @@ const ProductList = () => {
                 <div className="products-grid">
                     {products.map((product) => (
                         <div key={product.id} className="product-card">
-                            <h3>{product.nombre}</h3>
-                            <p>{product.descripcion}</p>
-                            <p className="price">${product.precioUnitario}</p>
-                            <button onClick={() => addToCart(product)}>Agregar al Carrito</button>
+                            <div className="product-image-placeholder">
+                                <span>📦</span>
+                            </div>
+                            <div className="product-info">
+                                <h3>{product.nombre}</h3>
+                                <p>{product.descripcion}</p>
+                                <div className="product-footer">
+                                    <span className="price">${product.precioUnitario}</span>
+                                    <button className="btn-add" onClick={() => addToCart(product)}>
+                                        Agregar +
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     ))}
                 </div>

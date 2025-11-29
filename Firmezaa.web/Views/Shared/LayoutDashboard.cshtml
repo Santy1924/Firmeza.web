@@ -18,18 +18,40 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/a2d04feffa6.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
 <div class="wrapper">
-    <!-- Sidebar -->
+
+    <!-- ====================== SIDEBAR ====================== -->
     <aside class="sidebar d-flex flex-column">
-        <h3>Panel Administrativo</h3>
+        <div class="brand mb-4">
+            <h3>Panel Administrativo</h3>
+        </div>
+
         <nav>
-            <a asp-controller="Dashboard" asp-action="Index"><i class="fa-solid fa-house"></i> Inicio</a>
-            <a asp-controller="Producto" asp-action="Index"><i class="fa-solid fa-box"></i> Productos</a>
-            <a asp-controller="Cliente" asp-action="Index"><i class="fa-solid fa-users"></i> Clientes</a>
-            <a asp-controller="Venta" asp-action="Index"><i class="fa-solid fa-coins"></i> Ventas</a>
+            <a asp-controller="Dashboard" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                <i class="fa-solid fa-house"></i> Inicio
+            </a>
+
+            <a asp-controller="Producto" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Producto" ? "active" : "")">
+                <i class="fa-solid fa-box"></i> Productos
+            </a>
+
+            <a asp-controller="Cliente" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Cliente" ? "active" : "")">
+                <i class="fa-solid fa-users"></i> Clientes
+            </a>
+
+            <a asp-controller="Venta" asp-action="Index"
+               class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Venta" ? "active" : "")">
+                <i class="fa-solid fa-coins"></i> Ventas
+            </a>
         </nav>
-        <div class="mt-auto">
+
+        <!-- Logout abajo -->
+        <div class="mt-auto sidebar-footer">
             <form asp-controller="Account" asp-action="Logout" method="post" class="logout-form">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="logout w-100">
@@ -38,21 +60,29 @@
             </form>
         </div>
     </aside>
+    <!-- ==================== FIN SIDEBAR ==================== -->
 
-    <!-- Contenido -->
+    <!-- ====================== CONTENIDO ====================== -->
     <main class="content">
+
+        <!-- Barra superior -->
         <div class="user-bar">
             Administrador
         </div>
+
+        <!-- Cuerpo -->
         <div class="page-body">
             @RenderBody()
         </div>
+
     </main>
+    <!-- ==================== FIN CONTENIDO ==================== -->
+
 </div>
 
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-@* ✔️ ESTA ES LA LÍNEA QUE FALTABA *@
+@* Scripts adicionales *@  
 @RenderSection("Scripts", required: false)
 
 </body>

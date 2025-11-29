@@ -16,15 +16,35 @@ namespace Firmeza.web.Controllers
 
         public IActionResult Index()
         {
-            var totalProductos = _context.Productos.Count();
-            var totalClientes = _context.Clientes.Count();
-            var totalVentas = _context.Ventas.Count();
+            try
+            {
+                var totalProductos = _context.Productos.Count();
+                var totalClientes = _context.Clientes.Count();
+                var totalVentas = _context.Ventas.Count();
 
-            ViewData["TotalProductos"] = totalProductos;
-            ViewData["TotalClientes"] = totalClientes;
-            ViewData["TotalVentas"] = totalVentas;
+                ViewData["TotalProductos"] = totalProductos;
+                ViewData["TotalClientes"] = totalClientes;
+                ViewData["TotalVentas"] = totalVentas;
 
-            return View();
+                return View();
+            }
+            catch (OperationCanceledException)
+            {
+                TempData["Error"] = "La solicitud tardó demasiado. Por favor, intente nuevamente.";
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Dashboard Index failed: {ex.Message}");
+                TempData["Error"] = "Ocurrió un error al cargar el dashboard. Por favor, intente nuevamente más tarde.";
+                
+                // Valores por defecto si hay error
+                ViewData["TotalProductos"] = 0;
+                ViewData["TotalClientes"] = 0;
+                ViewData["TotalVentas"] = 0;
+                
+                return View();
+            }
         }
     }
 }

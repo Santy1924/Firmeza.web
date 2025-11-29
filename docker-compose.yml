@@ -1,0 +1,62 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: firmeza-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Qwe.123*
+      POSTGRES_DB: Firmeza
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - firmeza-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Web.Api Service
+  web-api:
+    build:
+      context: ./Web.Api
+      dockerfile: Dockerfile
+    container_name: firmeza-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5272
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=Firmeza;Username=postgres;Password=Qwe.123*;Timeout=30;Command Timeout=30;Pooling=true;MinPoolSize=0;MaxPoolSize=100;Connection Idle Lifetime=300"
+    ports:
+      - "5275:5272"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - firmeza-network
+    restart: unless-stopped
+
+  # Cliente (React) Service
+  cliente:
+    build:
+      context: ./Cliente
+      dockerfile: Dockerfile
+    container_name: firmeza-cliente
+    ports:
+      - "5174:5173"
+    environment:
+      VITE_API_URL: http://web-api:5272/api
+    depends_on:
+      - web-api
+    networks:
+      - firmeza-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  firmeza-network:
+    driver: bridge
