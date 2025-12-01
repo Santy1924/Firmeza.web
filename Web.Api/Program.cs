@@ -96,18 +96,37 @@ builder.Services.AddTransient<Firmeza.web.Web.Api.Services.IEmailService, Firmez
 
 var app = builder.Build();
 
-// APPLY MIGRATIONS
-try
+// APPLY MIGRATIONS WITH RETRY LOGIC
+var maxRetries = 10;
+var delay = TimeSpan.FromSeconds(3);
+
+for (int i = 0; i < maxRetries; i++)
 {
-    using (var scope = app.Services.CreateScope())
+    try
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        dbContext.Database.Migrate();
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            
+            Console.WriteLine($"Attempting to apply migrations (attempt {i + 1}/{maxRetries})...");
+            dbContext.Database.Migrate();
+            Console.WriteLine("✓ Migrations applied successfully!");
+            break; // Success, exit retry loop
+        }
     }
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Error aplicando migraciones: {ex.Message}");
+    catch (Exception ex)
+    {
+        Console.WriteLine($"⚠ Error applying migrations (attempt {i + 1}/{maxRetries}): {ex.Message}");
+        
+        if (i == maxRetries - 1)
+        {
+            Console.WriteLine($"✗ Failed to apply migrations after {maxRetries} attempts. The application will continue but may not work correctly.");
+            break;
+        }
+        
+        Console.WriteLine($"Waiting {delay.TotalSeconds} seconds before retry...");
+        Thread.Sleep(delay);
+    }
 }
 
 // MIDDLEWARE
@@ -128,27 +147,52 @@ app.UseCors(x => x
 app.UseAuthentication();
 app.UseAuthorization();
 
-// SEED ROLES (Admin / Cliente)
-try
+// SEED ROLES (Admin / Cliente) - Run asynchronously to avoid blocking startup
+_ = Task.Run(async () =>
 {
-    using (var scope = app.Services.CreateScope())
+    var maxRetries = 5;
+    var delay = TimeSpan.FromSeconds(2);
+    
+    for (int i = 0; i < maxRetries; i++)
     {
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-        string[] roles = { "Admin", "Administrador", "Cliente" };
-
-        foreach (var role in roles)
+        try
         {
-            if (!await roleManager.RoleExistsAsync(role))
-                await roleManager.CreateAsync(new IdentityRole(role));
+            await Task.Delay(delay * (i + 1)); // Wait longer on each retry
+            
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                string[] roles = { "Admin", "Administrador", "Cliente" };
+
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(role));
+                        Console.WriteLine($"✓ Role '{role}' created successfully");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"✓ Role '{role}' already exists");
+                    }
+                }
+                
+                Console.WriteLine("✓ Role seeding completed successfully");
+                break; // Success, exit retry loop
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠ Error seeding roles (attempt {i + 1}/{maxRetries}): {ex.Message}");
+            if (i == maxRetries - 1)
+            {
+                Console.WriteLine($"✗ Failed to seed roles after {maxRetries} attempts");
+            }
         }
     }
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Error seeding roles: {ex.Message}");
-}
+});
 
 // MAP CONTROLLERS
 app.MapControllers();

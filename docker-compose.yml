@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: Qwe.123*
       POSTGRES_DB: Firmeza
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -45,7 +45,7 @@ services:
       dockerfile: Dockerfile
     container_name: firmeza-cliente
     ports:
-      - "5174:5173"
+      - "5175:5173"
     environment:
       VITE_API_URL: http://web-api:5272/api
     depends_on:
