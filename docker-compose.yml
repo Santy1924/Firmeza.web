@@ -8,13 +8,13 @@ services:
       POSTGRES_PASSWORD: Qwe.123*
       POSTGRES_DB: Firmeza
     ports:
-      - "5434:5432"
+      - "5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - firmeza-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -45,7 +45,7 @@ services:
       dockerfile: Dockerfile
     container_name: firmeza-cliente
     ports:
-      - "5175:5173"
+      - "5176:5173"
     environment:
       VITE_API_URL: http://web-api:5272/api
     depends_on:
@@ -54,8 +54,42 @@ services:
       - firmeza-network
     restart: unless-stopped
 
+  # Firmezaa.web (MVC Web App)
+  firmezaa-web:
+    build:
+      context: ./Firmezaa.web
+      dockerfile: Dockerfile
+    container_name: firmeza-mvc
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=Firmeza;Username=postgres;Password=Qwe.123*;Timeout=30;Command Timeout=30;Pooling=true;MinPoolSize=0;MaxPoolSize=100;Connection Idle Lifetime=300"
+    ports:
+      - "5280:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - firmeza-network
+    restart: unless-stopped
+
+  # Tests Service (runs once and exits)
+  tests:
+    build:
+      context: .
+      dockerfile: Firmeza.Tests/Dockerfile
+    container_name: firmeza-tests
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=Firmeza;Username=postgres;Password=Qwe.123*"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - firmeza-network
+
 volumes:
   postgres_data:
+
 
 networks:
   firmeza-network:

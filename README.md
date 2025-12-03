@@ -59,11 +59,16 @@ The easiest way to run the entire application is using Docker Compose.
     ```
 
 3.  **Access the applications**:
-    -   **Client Storefront**: [http://localhost:5175](http://localhost:5175)
-    -   **Admin Panel (MVC)**: [http://localhost:5013](http://localhost:5013) (if running locally) or configured port.
+    -   **Client Storefront**: [http://localhost:5176](http://localhost:5176)
+    -   **Admin Panel (MVC)**: [http://localhost:5280](http://localhost:5280)
     -   **API Swagger**: [http://localhost:5275/swagger](http://localhost:5275/swagger)
+    -   **PostgreSQL**: Port 5435
 
-    *Note: The Docker configuration maps the API to port 5275 and the Client to 5175 to avoid conflicts with local development ports.*
+    *Note: The Docker configuration maps ports as follows to avoid conflicts:*
+    *   *API: 5275*
+    *   *Client: 5176*
+    *   *MVC Admin: 5280*
+    *   *PostgreSQL: 5435*
 
 ## 🔧 Local Development Setup
 
@@ -122,6 +127,9 @@ Firmeza.web/
 │   ├── Controllers/
 │   ├── Services/
 │   └── Dockerfile
+├── Firmeza.Tests/          # Unit & Integration Tests
+│   ├── Services/
+│   └── Controllers/
 └── docker-compose.yml      # Docker orchestration
 ```
 

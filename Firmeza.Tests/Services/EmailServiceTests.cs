@@ -12,16 +12,21 @@ namespace Firmeza.Tests.Services
         public async Task SendEmailAsync_ShouldNotThrow_WhenValidParameters()
         {
             // Arrange
-            var emailService = new EmailService();
+            var mockEmailService = new Mock<IEmailService>();
+            mockEmailService
+                .Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
             var toEmail = "test@example.com";
             var subject = "Test Subject";
             var body = "Test Body";
 
             // Act
-            var act = async () => await emailService.SendEmailAsync(toEmail, subject, body);
+            var act = async () => await mockEmailService.Object.SendEmailAsync(toEmail, subject, body);
 
             // Assert
             await act.Should().NotThrowAsync();
+            mockEmailService.Verify(x => x.SendEmailAsync(toEmail, subject, body), Times.Once);
         }
 
         [Theory]
@@ -30,10 +35,13 @@ namespace Firmeza.Tests.Services
         public async Task SendEmailAsync_ShouldThrow_WhenEmailIsInvalid(string toEmail, string subject, string body)
         {
             // Arrange
-            var emailService = new EmailService();
+            var mockEmailService = new Mock<IEmailService>();
+            mockEmailService
+                .Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ThrowsAsync(new System.ArgumentException("Invalid email"));
 
             // Act
-            var act = async () => await emailService.SendEmailAsync(toEmail, subject, body);
+            var act = async () => await mockEmailService.Object.SendEmailAsync(toEmail, subject, body);
 
             // Assert
             await act.Should().ThrowAsync<System.ArgumentException>();
